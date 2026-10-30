@@ -23,7 +23,7 @@ export async function run(): Promise<void> {
   assert.ok(result.files.every(isWithinWorkspace));
   source.cancel();
   await assert.rejects(scanWorkspace(2, source.token), vscode.CancellationError);
-  const extension = vscode.extensions.getExtension('archi-local.archi');
+  const extension = vscode.extensions.getExtension('tinomupezeni.archi');
   assert.ok(extension, 'development extension must be loaded');
   await extension.activate();
   await vscode.commands.executeCommand('archi.analyzeWorkspace');

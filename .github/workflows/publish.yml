@@ -1,0 +1,45 @@
+name: Publish VS Code extension
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Verify release tag matches package version
+        run: node -e "process.exit(process.env.GITHUB_REF_NAME === 'v' + require('./package.json').version ? 0 : 1)"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint and unit tests
+        run: |
+          npm run lint
+          npm test
+
+      - name: Run extension-host tests
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes xvfb
+          xvfb-run --auto-servernum npm run test:extension
+
+      - name: Publish to Visual Studio Marketplace
+        run: npx @vscode/vsce publish --oidc

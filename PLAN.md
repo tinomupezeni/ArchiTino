@@ -75,7 +75,7 @@ flowchart LR
 
 ## Work units and evidence
 
-The [implementation plan](IMPLEMENTATION_PLAN.md) begins with an HBEC comparison against existing extensions, then builds the graph foundation, system map, data map, and unified navigation. That unified journey is the first private VSIX release gate. Focused component and flow tracing follow only where existing tools leave a demonstrated gap.
+The [implementation plan](IMPLEMENTATION_PLAN.md) begins with an HBEC comparison against existing extensions, then builds the graph foundation, system map, data map, and unified navigation. That unified journey is the MVP release gate; the user has selected public Marketplace distribution under the `tinomupezeni` publisher ID. Focused component and flow tracing follow only where existing tools leave a demonstrated gap.
 
 ## Engineering constraints
 
@@ -90,5 +90,5 @@ The [implementation plan](IMPLEMENTATION_PLAN.md) begins with an HBEC comparison
 ## Open decisions
 
 1. Whether optional AI summaries should use a user-supplied provider, a local model, or VS Code's language-model API. This does not block the local-first MVP.
-2. Whether to ship private workspace-only use first or prepare for Marketplace publication; this affects packaging, licensing, and support policy, not the graph design.
+2. Automated release credentials. The `tinomupezeni` publisher and public `tinomupezeni.archi` listing are live; GitHub Actions Trusted Publishing can be configured later for tag-based releases.
 3. Whether shared views should be committed to each project (`.archi/views/`) or stored only in VS Code user storage by default.

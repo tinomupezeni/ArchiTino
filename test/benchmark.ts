@@ -34,7 +34,7 @@ async function runOnce(label: string): Promise<Pass> {
 export async function run(): Promise<void> {
   const folder = vscode.workspace.workspaceFolders?.[0];
   if (!folder) throw new Error('benchmark must open a workspace');
-  const extension = vscode.extensions.getExtension('archi-local.archi');
+  const extension = vscode.extensions.getExtension('tinomupezeni.archi');
   await extension?.activate();
   const cold = await runOnce('cold');
   const warm = await runOnce('warm');

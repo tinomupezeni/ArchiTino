@@ -36,17 +36,17 @@ Added **Mermaid, SVG, and PNG export**, driven from a new toolbar control, expor
 
 Added `examples/sample-workspace/`: a deliberately tiny, self-contained Django-shaped project (one `docker-compose.yml`, one `models.py`, one route pair, one Celery task) that exercises all three views without needing HBEC. Building it surfaced one worth-noting non-bug: the generic (non-HBEC) half of `test/extension.test.ts` assumes any `ARCHI_TEST_WORKSPACE` folder has a `package.json` (true for HBEC and for Archi's own repo, the only two workspaces this suite had ever been pointed at) — a smoke-test fixture gap, not an extension bug, fixed by giving the example workspace a `package.json` like any real project would have anyway, rather than weakening the test's assumption.
 
-## Packaging, licensing, and Marketplace — open decision, not resolved here
+## Packaging, licensing, and Marketplace
 
-The plan's fourth Phase 6 item is a decision, not code: whether to add a LICENSE, and whether Archi stays a private, workspace-local tool or moves toward Marketplace publication. `package.json` already says `"publisher": "archi-local"` and `"private": true`, consistent with staying private so far, and nothing in this session's work changed that signal. `vsce` has been warning about the missing LICENSE file since Phase 4; left unresolved pending the user's actual intent, since license choice is theirs to make, not a default to assume.
+The user created the `tinomupezeni` Marketplace publisher and published `tinomupezeni.archi` version `0.1.0`. Version `0.1.1` updates the Marketplace README with user-focused explanations and real screenshots from the included sample workspace. `npm run package` generated `archi-0.1.1.vsix`, with the new publisher ID, README, and three screenshot files verified inside the archive. Upload this VSIX from the existing extension's publisher page to update the listing. GitHub Actions Trusted Publishing remains optional future setup for automated releases; the current workflow publishes only on matching version tags.
 
 ## Verification
 
-`npm run build`, `npm run lint`, `npm test` (29/29), `ARCHI_TEST_WORKSPACE=/home/shadowe/Projects/HBEC npm run test:extension`, `ARCHI_TEST_WORKSPACE=examples/sample-workspace npm run test:extension`, and `npm run benchmark` all pass. `npm run package` still produces a correctly dependency-pruned VSIX.
+At the Phase 6 implementation pass, `npm run build`, `npm run lint`, `npm test` (29/29), the HBEC and sample-workspace extension-host tests, `npm run benchmark`, and VSIX packaging were recorded as passing. For the current Marketplace update, `npm run package` succeeds and produces `archi-0.1.1.vsix` with the updated README and screenshots.
 
 ## Follow-ups / Deferred
 
-- The LICENSE/Marketplace decision above.
+- GitHub Actions Trusted Publishing policy setup in the Marketplace portal, if automated releases are desired.
 - JS/TS frontend-call tracing (already deferred from Phase 5, still the main remaining feature gap).
 - Applying the Phase "v0.2" dagre layout to the Data view (already deferred from that work).
 - The MVP release gate's manual VS Code desktop click-through is still the user's to confirm — nothing in Phase 6 substitutes for it, though the headless-Chrome visual testing used throughout this phase covers what can be checked without a real GUI session.

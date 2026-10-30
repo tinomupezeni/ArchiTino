@@ -2,8 +2,8 @@
   "name": "archi",
   "displayName": "Archi",
   "description": "Source-backed architecture diagrams for VS Code workspaces",
-  "version": "0.1.0",
-  "publisher": "archi-local",
+  "version": "0.1.1",
+  "publisher": "tinomupezeni",
   "private": true,
   "license": "MIT",
   "author": "Tinotendamupezeni",
@@ -88,7 +88,7 @@
     "test": "npm run build && node --test dist/test/graph.test.js dist/test/compose.test.js dist/test/pythonModels.test.js dist/test/pythonRoutes.test.js dist/test/pythonTasks.test.js dist/test/viewState.test.js test/webview.test.cjs",
     "test:extension": "npm run build && node ./scripts/test-extension.cjs",
     "benchmark": "npm run build && node ./scripts/benchmark.cjs",
-    "package": "npm run build && vsce package --no-rewrite-relative-links"
+    "package": "npm run build && vsce package --githubBranch main"
   },
   "devDependencies": {
     "@dagrejs/dagre": "^3.1.3",
