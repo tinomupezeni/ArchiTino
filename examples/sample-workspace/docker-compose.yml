@@ -1,0 +1,25 @@
+services:
+  notes:
+    build: ./backend
+    environment:
+      POSTGRES_DB: notes_db
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+
+  notes-worker:
+    build: ./backend
+    command: ["celery", "-A", "config", "worker"]
+    environment:
+      POSTGRES_DB: notes_db
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:16
+
+  redis:
+    image: redis:7

@@ -1,0 +1,5 @@
+{
+  "name": "archi-sample-workspace",
+  "private": true,
+  "description": "A minimal workspace demonstrating Archi's System, Data, and Flows views without requiring a real project."
+}

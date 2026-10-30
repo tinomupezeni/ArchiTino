@@ -1,0 +1,12 @@
+.vscode/**
+.vscode-test/**
+src/**
+test/**
+scripts/**
+dist/test/**
+tsconfig.json
+*.vsix
+.gitignore
+PLAN.md
+IMPLEMENTATION_PLAN.md
+PHASE*.md
