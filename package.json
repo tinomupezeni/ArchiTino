@@ -2,7 +2,7 @@
   "name": "archi",
   "displayName": "Archi",
   "description": "Source-backed architecture diagrams for VS Code workspaces",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "publisher": "tinomupezeni",
   "private": true,
   "license": "MIT",
