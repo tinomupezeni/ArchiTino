@@ -2,7 +2,7 @@
   "name": "archi",
   "displayName": "Archi",
   "description": "Source-backed architecture diagrams for VS Code workspaces",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "publisher": "tinomupezeni",
   "private": true,
   "license": "MIT",
@@ -50,7 +50,7 @@
     "viewsWelcome": [
       {
         "view": "archi.quickstart",
-        "contents": "**Visualize your codebase**\\n\\n[Analyze this workspace](command:archi.analyzeWorkspace)\\n\\n[Design from PRD](command:archi.designFromPrd)\\n\\n[Open last diagram](command:archi.openLastDiagram)\\n\\n[Choose a Compose file](command:archi.selectComposeFile)",
+        "contents": "### Archi Architecture Studio\\nUnderstand, design, and simulate system architectures directly from source code and PRD documents.\\n\\n[$(search) Analyze Workspace](command:archi.analyzeWorkspace)\\nExtract live architecture maps from Docker Compose, Django/SQLAlchemy models, routes, and tasks.\\n\\n[$(sparkle) Design Architecture from PRD](command:archi.designFromPrd)\\nTurn a PRD or spec into an interactive diagram with live security and health critiques.\\n\\n[$(history) Open Last Diagram](command:archi.openLastDiagram)\\nRestore your last explored architecture canvas.\\n\\n[$(file-code) Select Compose File](command:archi.selectComposeFile)\\nChoose a specific Docker Compose manifest.",
         "enablement": "true"
       }
     ],

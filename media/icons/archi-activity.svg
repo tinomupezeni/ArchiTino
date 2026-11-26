@@ -1,6 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M7.2 7.8 16.6 6M7.4 9.5l8.9 7.2"/>
-  <circle cx="5.5" cy="8.5" r="2.5"/>
-  <circle cx="18.5" cy="5.5" r="2.5"/>
-  <circle cx="18.5" cy="18.5" r="2.5"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Clean triangular architecture network matching Archi's official brand icon -->
+  <line x1="12" y1="5.5" x2="6" y2="17.5"/>
+  <line x1="12" y1="5.5" x2="18" y2="17.5"/>
+  <line x1="6" y1="17.5" x2="18" y2="17.5"/>
+  <!-- Top apex node (System/Service) -->
+  <circle cx="12" cy="5.5" r="2.8" fill="currentColor"/>
+  <!-- Left bottom node (Data/Models) -->
+  <circle cx="6" cy="17.5" r="2.4" fill="currentColor"/>
+  <!-- Right bottom node (Flows/Tasks) -->
+  <circle cx="18" cy="17.5" r="2.4" fill="currentColor"/>
+  <!-- Center focal cutouts for crisp visibility -->
+  <circle cx="12" cy="5.5" r="1.1" fill="var(--vscode-activityBar-background, #181818)"/>
+  <circle cx="6" cy="17.5" r="0.9" fill="var(--vscode-activityBar-background, #181818)"/>
+  <circle cx="18" cy="17.5" r="0.9" fill="var(--vscode-activityBar-background, #181818)"/>
 </svg>
