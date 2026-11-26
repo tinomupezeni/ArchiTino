@@ -7,6 +7,16 @@ header p { margin: 0; color: var(--vscode-descriptionForeground); }
 .toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; padding: 10px 20px; border-bottom: 1px solid var(--vscode-panel-border); }
 #breadcrumbs { color: var(--vscode-descriptionForeground); font-size: 12px; }
 #budget-warning { margin: 0; padding: 8px 20px; color: var(--vscode-editorWarning-foreground); border-bottom: 1px solid var(--vscode-panel-border); }
+#critique-banner { padding: 10px 20px; border-bottom: 1px solid var(--vscode-panel-border); background: var(--vscode-editorWidget-background); font-size: 13px; }
+.critique-score { font-weight: bold; margin-bottom: 6px; }
+.critique-score.good { color: var(--vscode-charts-green); }
+.critique-score.warning { color: var(--vscode-charts-orange); }
+.critique-score.danger { color: var(--vscode-charts-red); }
+.critique-item { margin: 4px 0; padding: 4px 8px; border-radius: 4px; }
+.critique-item.security { background: rgba(255, 75, 75, 0.15); border-left: 3px solid var(--vscode-charts-red); }
+.critique-item.weakness { background: rgba(255, 165, 0, 0.15); border-left: 3px solid var(--vscode-charts-orange); }
+.critique-item.strength { background: rgba(75, 200, 75, 0.15); border-left: 3px solid var(--vscode-charts-green); }
+.palette-btn { margin-left: auto; }
 input, select, button { color: var(--vscode-input-foreground); background: var(--vscode-input-background); border: 1px solid var(--vscode-input-border, var(--vscode-panel-border)); border-radius: 4px; padding: 6px 9px; font: inherit; }
 input[type=search] { min-width: 190px; }
 input[type=range] { width: 100px; padding: 0; }

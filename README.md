@@ -1,33 +1,46 @@
 # Archi
 
-**Understand how a codebase fits together.** Archi turns project configuration and source declarations into diagrams you can explore directly in VS Code: services, data models, routes, and background tasks.
+**Interactive Architecture Studio & Design Critic for VS Code.** Archi bridges specification and implementation: turn Product Requirements Documents (PRDs) into interactive diagrams, experiment with alternative component topologies with instant and AI-assisted health critiques, and extract source-backed architecture maps directly from code.
 
 Archi helps answer questions such as:
 
+- How should the system be structured based on a PRD or design specification?
+- What are the security vulnerabilities, single points of failure (SPOFs), or cyclic bottlenecks in a proposed topology?
+- Does the actual running codebase match the architectural specification (conformance & drift)?
 - Which services depend on each other, and which databases or caches do they use?
-- Which models are connected, and which service owns them?
-- Which routes and background tasks belong to an application?
-- Where in the source is a diagram connection declared?
+- Where in the source or specification is a connection declared?
 
-The diagrams are interactive and source-linked. Select a component or connection to inspect it, then open the source location behind it.
+The diagrams are interactive, malleable, and source-linked. Select a component or connection to inspect it, rewire relationships, run AI critiques, or scaffold Docker Compose and Architecture Decision Records (ADRs).
 
 ## See Archi in action
 
+### 1. Interactive Architecture Studio & PRD Synthesis
+
+Feed any PRD or technical specification into Archi. Powered by your active coding agent (**Google Antigravity**, **Claude Code**, **GitHub Copilot**, or **Codex**), Archi synthesizes components, directed protocols, and links back to exact PRD lines.
+
+- **Interactive Playground:** Add components (`+ Component`), rewire links (`↔ Connect`), or delete elements.
+- **Instant Health & Security Linter (<50ms):** Automatically flags direct database exposure, cyclic sync deadlocks, and un-replicated bottlenecks with a live 0–100 Health Score.
+- **Deep AI Architecture Critique:** On-demand Principal Systems Architect evaluation delivering Security, Scalability, and Reliability verdicts with actionable recommendations.
+- **Spec-to-Code Conformance & Drift:** Compare your PRD design against extracted code to find missing services and undocumented shadow infrastructure.
+- **Downstream Scaffolding:** One-click export to `docker-compose.archi.yml` and `ADR-architecture-decision.md` with embedded Mermaid flows.
+
+### 2. Codebase Architecture Extraction
+
 These screenshots use the included sample workspace.
 
-### System map
+#### System map
 
-See the application, database, and cache relationships in one view.
+See application, database, and cache relationships in one view with Compose service normalization.
 
 ![Archi system map showing the Notes application and its infrastructure dependencies](media/screenshots/system-map.png)
 
-### Data map
+#### Data map
 
 Explore Django and SQLAlchemy models in domain or physical table view. Follow declared relationships and jump to the field that defines them.
 
 ![Archi data map showing Note, Notebook, and Tag models with a source-linked foreign key](media/screenshots/data-map.png)
 
-### Flows
+#### Flows
 
 Browse Django routes and Celery tasks by service and app, with source links to their declarations.
 
@@ -35,26 +48,24 @@ Browse Django routes and Celery tasks by service and app, with source links to t
 
 ## Get started
 
-1. [Install Archi from the Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=tinomupezeni.archi).
+1. Install Archi in VS Code (or package via `npm run package` and install the VSIX).
 2. Open a project folder in VS Code.
-3. Run **Archi: Analyze Workspace** from the Command Palette.
-4. Choose **System**, **Data**, or **Flows** above the diagram. Select a service or app to narrow the view.
-
-Archi uses Docker Compose files for the system map and service ownership. If a project has more than one Compose file, use **Archi: Select Compose File** to choose one. Without Compose, Archi can still show a data map for discovered model files.
-
-Try the [included sample workspace](examples/sample-workspace) if you want to explore the views without opening another project.
+3. Select the **Archi icon in the Activity Bar** (sidebar) and choose:
+   - **Analyze this workspace**: Static extraction from Docker Compose, Django/SQLAlchemy models, routes, and tasks.
+   - **Design from PRD**: Select any PRD or spec markdown file to synthesize an interactive diagram via your connected agent.
+   - **Open last diagram**: Re-open your cached diagram layout.
+4. In the diagram webview:
+   - Rearrange nodes and inspect the live **Architecture Health Score**.
+   - Click **Deep AI Critique** for a multi-dimensional security and scalability assessment.
+   - Click **Spec Drift** to check conformance against your codebase.
+   - Use **Save** to export as SVG, PNG, Mermaid, Docker Compose, or ADR Markdown.
 
 ## What Archi reads
 
+- **PRD Documents:** Markdown/text specifications analyzed via `vscode.lm` or CLI agents (`agy`, `claude`, `copilot`, `codex`).
 - **System:** Docker Compose services and declared HTTP, Redis, database, and startup-dependency links.
 - **Data:** Django models and common SQLAlchemy declarative models, including foreign keys, one-to-one links, and many-to-many relationships.
 - **Flows:** Django URL patterns and Celery task declarations and trigger sites.
-
-Click a connection to inspect its evidence. Move between a service and its data or flows, filter and search the diagram, and export the current view as SVG, PNG, or Mermaid. Archi can also remember diagram labels, visibility, and positions in `.archi/views/default.json`.
-
-## Local analysis
-
-Archi reads files in open workspace folders. It parses source as data: it does not execute project code, run migrations, connect to a database, or send source to an external service. Since extraction is static, dynamic model names, routes, and relationships may not appear; unresolved references are reported rather than guessed.
 
 ## Develop Archi
 
@@ -63,7 +74,7 @@ npm install
 npm run build
 npm run lint
 npm test
-npm run test:extension
+npm run package
 ```
 
 See [Contributing](CONTRIBUTING.md) to work on Archi and [Adding an extractor](docs/ADDING_AN_EXTRACTOR.md) to add language support. Archi is open source under the [MIT License](LICENSE).

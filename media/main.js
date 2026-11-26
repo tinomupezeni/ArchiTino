@@ -21,6 +21,12 @@
   const budgetWarning = document.getElementById('budget-warning');
   const exportFormat = document.getElementById('export-format');
   const exportBtn = document.getElementById('export');
+  const addComponentBtn = document.getElementById('add-component');
+  const connectNodesBtn = document.getElementById('connect-nodes');
+  const deepCritiqueBtn = document.getElementById('deep-critique');
+  const checkDriftBtn = document.getElementById('check-drift');
+  const critiqueBanner = document.getElementById('critique-banner');
+  let connectSourceNode = null;
   let systemGraph = { nodes: [], edges: [] };
   let dataGraph = { nodes: [], edges: [] };
   let componentGraph = { nodes: [], edges: [] };
@@ -179,6 +185,13 @@
     crossViewControl(node, details);
     renameControls(node, details);
     hideControl(node, details);
+    if (!node.id.startsWith('group:')) {
+      details.append(button('Delete component', () => {
+        api.postMessage({ type: 'mutateDeleteNode', nodeId: node.id });
+        selected = null;
+        details.textContent = 'Component deleted.';
+      }));
+    }
     if (node.id.startsWith('group:')) {
       details.append(text('p', graph.nodes.filter(item => item.group === node.label).length + ' components in this area.'));
       details.append(button('Explore area', () => { focus = node.label; render(); }));
@@ -199,6 +212,13 @@
       sourceButtons(original, section);
       details.append(section);
     }
+    details.append(button('Disconnect link', () => {
+      for (const orig of edge.originals) {
+        api.postMessage({ type: 'mutateDeleteEdge', edgeId: orig.id });
+      }
+      selected = null;
+      details.textContent = 'Link disconnected.';
+    }));
     render();
   }
   function project() {
@@ -471,8 +491,8 @@
   }
   exportBtn.addEventListener('click', async () => {
     const format = exportFormat.value;
-    if (format === 'mermaid') {
-      api.postMessage({ type: 'export', format, content: buildMermaid() });
+    if (format === 'mermaid' || format === 'compose' || format === 'adr') {
+      api.postMessage({ type: 'export', format, content: format === 'mermaid' ? buildMermaid() : '' });
       return;
     }
     const svgString = buildExportSvg();
@@ -565,7 +585,139 @@
       populateApps();
       if (state.app) appSelect.value = state.app;
     }
+    if (message.critique && critiqueBanner) {
+      renderCritique(message.critique);
+    }
     render();
   });
+
+  window.addEventListener('message', event => {
+    const message = event.data;
+    if (!message || message.type !== 'deepCritiqueReport') return;
+    const report = message.report;
+    details.replaceChildren();
+    details.append(text('h2', 'AI Architecture Critique (' + (message.agentName || 'Agent') + ')'));
+    details.append(text('p', report.executiveSummary));
+
+    const verdicts = document.createElement('div');
+    verdicts.append(text('p', 'Security: ' + report.securityVerdict));
+    verdicts.append(text('p', 'Scalability: ' + report.scalabilityVerdict));
+    verdicts.append(text('p', 'Reliability: ' + report.reliabilityVerdict));
+    details.append(verdicts);
+
+    if (report.recommendations && report.recommendations.length) {
+      details.append(text('h3', 'Recommendations'));
+      for (const rec of report.recommendations) {
+        const item = document.createElement('div');
+        item.className = 'critique-item ' + (rec.severity === 'high' ? 'security' : 'weakness');
+        item.append(text('strong', '[' + rec.category.toUpperCase() + ' - ' + rec.severity.toUpperCase() + '] ' + rec.title));
+        item.append(text('p', rec.explanation));
+        if (rec.suggestedAction) {
+          item.append(text('small', 'Action: ' + rec.suggestedAction));
+        }
+        details.append(item);
+      }
+    }
+  });
+
+  window.addEventListener('message', event => {
+    const message = event.data;
+    if (!message || message.type !== 'driftReport') return;
+    const report = message.report;
+    details.replaceChildren();
+    details.append(text('h2', 'Spec Conformance: ' + report.conformanceScore + '%'));
+    details.append(text('p', report.summary));
+
+    details.append(text('h3', 'Component Drift'));
+    for (const comp of report.components) {
+      const item = document.createElement('div');
+      item.className = 'critique-item ' + (comp.status === 'matched' ? 'strength' : comp.status === 'missing_in_code' ? 'security' : 'weakness');
+      item.append(text('strong', '[' + comp.status.replace(/_/g, ' ').toUpperCase() + '] ' + comp.name + ' (' + comp.kind + ')'));
+      item.append(text('p', comp.detail));
+      details.append(item);
+    }
+
+    if (report.links && report.links.length) {
+      details.append(text('h3', 'Interaction Drift'));
+      for (const link of report.links) {
+        const item = document.createElement('div');
+        item.className = 'critique-item ' + (link.status === 'matched' ? 'strength' : 'security');
+        item.append(text('strong', '[' + link.status.replace(/_/g, ' ').toUpperCase() + '] ' + link.from + ' → ' + link.to + ' (' + link.kind + ')'));
+        item.append(text('p', link.detail));
+        details.append(item);
+      }
+    }
+  });
+
+  function renderCritique(report) {
+    critiqueBanner.replaceChildren();
+    const scoreClass = report.overallScore >= 80 ? 'good' : report.overallScore >= 50 ? 'warning' : 'danger';
+    const scoreText = 'Architecture Health Score: ' + report.overallScore + '/100';
+    const scoreEl = text('div', scoreText);
+    scoreEl.className = 'critique-score ' + scoreClass;
+    critiqueBanner.append(scoreEl);
+
+    for (const item of (report.critiques || []).slice(0, 4)) {
+      const el = document.createElement('div');
+      el.className = 'critique-item ' + item.type;
+      el.append(text('strong', item.title + ': '));
+      el.append(text('span', item.detail));
+      critiqueBanner.append(el);
+    }
+    critiqueBanner.hidden = (report.critiques || []).length === 0;
+  }
+
+  if (addComponentBtn) {
+    addComponentBtn.addEventListener('click', () => {
+      const label = prompt('Component name (e.g. Auth Service, Redis Cache):');
+      if (!label || !label.trim()) return;
+      const kind = prompt('Kind (service, database, cache, broker):', 'service') || 'service';
+      api.postMessage({ type: 'mutateAddNode', label: label.trim(), kind });
+    });
+  }
+
+  if (connectNodesBtn) {
+    connectNodesBtn.addEventListener('click', () => {
+      if (!selected) {
+        alert('Please select a source component first on the diagram, then click Connect.');
+        return;
+      }
+      const sourceNode = graph.nodes.find(n => n.id === selected);
+      if (!sourceNode) return;
+      const targets = graph.nodes.filter(n => n.id !== selected && !n.id.startsWith('group:'));
+      if (targets.length === 0) {
+        alert('No other components available to connect.');
+        return;
+      }
+      const targetLabels = targets.map((t, idx) => (idx + 1) + '. ' + displayLabel(t)).join('\n');
+      const pick = prompt('Connect "' + displayLabel(sourceNode) + '" to which target? Enter number:\n' + targetLabels);
+      if (!pick) return;
+      const index = parseInt(pick, 10) - 1;
+      if (index >= 0 && index < targets.length) {
+        const target = targets[index];
+        const kind = prompt('Connection type (calls, reads, writes, publishes, consumes):', 'calls') || 'calls';
+        const label = prompt('Connection label / protocol (e.g. REST, gRPC, WebSocket):', '') || undefined;
+        api.postMessage({ type: 'mutateAddEdge', fromId: sourceNode.id, toId: target.id, kind, label });
+      }
+    });
+  }
+
+  if (deepCritiqueBtn) {
+    deepCritiqueBtn.addEventListener('click', () => {
+      details.replaceChildren();
+      details.append(text('h2', 'Deep AI Architecture Critique'));
+      details.append(text('p', 'Requesting multi-dimensional assessment from active coding agent...'));
+      api.postMessage({ type: 'requestDeepCritique' });
+    });
+  }
+
+  if (checkDriftBtn) {
+    checkDriftBtn.addEventListener('click', () => {
+      details.replaceChildren();
+      details.append(text('h2', 'Architecture Spec vs. Code Drift'));
+      details.append(text('p', 'Comparing active architecture against extracted codebase facts...'));
+      api.postMessage({ type: 'checkDrift' });
+    });
+  }
   api.postMessage({ type: 'ready' });
 })();

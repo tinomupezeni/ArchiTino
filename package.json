@@ -2,7 +2,7 @@
   "name": "archi",
   "displayName": "Archi",
   "description": "Source-backed architecture diagrams for VS Code workspaces",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "tinomupezeni",
   "private": true,
   "license": "MIT",
@@ -24,9 +24,36 @@
     "onCommand:archi.analyzeWorkspace",
     "onCommand:archi.showFixture",
     "onCommand:archi.openLastDiagram",
-    "onCommand:archi.selectComposeFile"
+    "onCommand:archi.selectComposeFile",
+    "onCommand:archi.designFromPrd",
+    "onView:archi.quickstart"
   ],
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "archi",
+          "title": "Archi",
+          "icon": "media/icons/archi-activity.svg"
+        }
+      ]
+    },
+    "views": {
+      "archi": [
+        {
+          "id": "archi.quickstart",
+          "name": "Get Started",
+          "icon": "media/icons/archi-activity.svg"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "archi.quickstart",
+        "contents": "**Visualize your codebase**\\n\\n[Analyze this workspace](command:archi.analyzeWorkspace)\\n\\n[Design from PRD](command:archi.designFromPrd)\\n\\n[Open last diagram](command:archi.openLastDiagram)\\n\\n[Choose a Compose file](command:archi.selectComposeFile)",
+        "enablement": "true"
+      }
+    ],
     "commands": [
       {
         "command": "archi.analyzeWorkspace",
@@ -43,6 +70,10 @@
       {
         "command": "archi.selectComposeFile",
         "title": "Archi: Select Compose File"
+      },
+      {
+        "command": "archi.designFromPrd",
+        "title": "Archi: Design Architecture from PRD"
       }
     ],
     "configuration": {
@@ -85,7 +116,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json && node scripts/copy-vendor.cjs",
     "lint": "tsc --noEmit -p tsconfig.json",
-    "test": "npm run build && node --test dist/test/graph.test.js dist/test/compose.test.js dist/test/pythonModels.test.js dist/test/pythonRoutes.test.js dist/test/pythonTasks.test.js dist/test/viewState.test.js test/webview.test.cjs",
+    "test": "npm run build && node --test dist/test/graph.test.js dist/test/compose.test.js dist/test/pythonModels.test.js dist/test/pythonRoutes.test.js dist/test/pythonTasks.test.js dist/test/viewState.test.js dist/test/prdArchitecture.test.js dist/test/graphSandbox.test.js dist/test/deepCritique.test.js dist/test/scaffoldGenerator.test.js dist/test/driftEngine.test.js test/webview.test.cjs",
     "test:extension": "npm run build && node ./scripts/test-extension.cjs",
     "benchmark": "npm run build && node ./scripts/benchmark.cjs",
     "package": "npm run build && vsce package --githubBranch main"
