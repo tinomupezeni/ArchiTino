@@ -26,6 +26,7 @@
   const deepCritiqueBtn = document.getElementById('deep-critique');
   const checkDriftBtn = document.getElementById('check-drift');
   const critiqueBanner = document.getElementById('critique-banner');
+  const toggleFullscreenBtn = document.getElementById('toggle-fullscreen');
   let connectSourceNode = null;
   let systemGraph = { nodes: [], edges: [] };
   let dataGraph = { nodes: [], edges: [] };
@@ -717,6 +718,15 @@
       details.append(text('h2', 'Architecture Spec vs. Code Drift'));
       details.append(text('p', 'Comparing active architecture against extracted codebase facts...'));
       api.postMessage({ type: 'checkDrift' });
+    });
+  }
+
+  if (toggleFullscreenBtn) {
+    toggleFullscreenBtn.addEventListener('click', () => {
+      document.body.classList.toggle('full-view');
+      const isFull = document.body.classList.contains('full-view');
+      toggleFullscreenBtn.textContent = isFull ? '✕ Exit Full View' : '⛶ Full View';
+      toggleFullscreenBtn.setAttribute('aria-pressed', String(isFull));
     });
   }
   api.postMessage({ type: 'ready' });
