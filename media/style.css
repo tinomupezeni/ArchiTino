@@ -1,54 +1,318 @@
 * { box-sizing: border-box; }
-body { margin: 0; color: var(--vscode-foreground); background: var(--vscode-editor-background); font: var(--vscode-font-size) var(--vscode-font-family); }
-header { padding: 14px 20px; border-bottom: 1px solid var(--vscode-panel-border); }
-h1 { margin: 0 0 4px; font-size: 20px; }
-header p { margin: 0; color: var(--vscode-descriptionForeground); }
-#coverage { margin-top: 4px; font-size: 12px; }
-.toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; padding: 10px 20px; border-bottom: 1px solid var(--vscode-panel-border); }
-#breadcrumbs { color: var(--vscode-descriptionForeground); font-size: 12px; }
-#budget-warning { margin: 0; padding: 8px 20px; color: var(--vscode-editorWarning-foreground); border-bottom: 1px solid var(--vscode-panel-border); }
-#critique-banner { padding: 10px 20px; border-bottom: 1px solid var(--vscode-panel-border); background: var(--vscode-editorWidget-background); font-size: 13px; }
-.critique-score { font-weight: bold; margin-bottom: 6px; }
-.critique-score.good { color: var(--vscode-charts-green); }
-.critique-score.warning { color: var(--vscode-charts-orange); }
-.critique-score.danger { color: var(--vscode-charts-red); }
-.critique-item { margin: 4px 0; padding: 4px 8px; border-radius: 4px; }
-.critique-item.security { background: rgba(255, 75, 75, 0.15); border-left: 3px solid var(--vscode-charts-red); }
-.critique-item.weakness { background: rgba(255, 165, 0, 0.15); border-left: 3px solid var(--vscode-charts-orange); }
-.critique-item.strength { background: rgba(75, 200, 75, 0.15); border-left: 3px solid var(--vscode-charts-green); }
-.palette-btn { margin-left: auto; }
-input, select, button { color: var(--vscode-input-foreground); background: var(--vscode-input-background); border: 1px solid var(--vscode-input-border, var(--vscode-panel-border)); border-radius: 4px; padding: 6px 9px; font: inherit; }
-input[type=search] { min-width: 190px; }
-input[type=range] { width: 100px; padding: 0; }
-button { cursor: pointer; color: var(--vscode-button-foreground); background: var(--vscode-button-background); }
-button:hover { background: var(--vscode-button-hoverBackground); }
-button:focus-visible, input:focus-visible, select:focus-visible, .map-node:focus-visible, .link-hit:focus-visible { outline: 2px solid var(--vscode-focusBorder); outline-offset: 2px; }
-main { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(260px, 320px); min-height: calc(100vh - 130px); }
-#canvas { overflow: auto; background: var(--vscode-editor-background); }
-#canvas svg { display: block; }
-#details { padding: 18px; border-left: 1px solid var(--vscode-panel-border); overflow: auto; max-height: calc(100vh - 130px); overflow-wrap: anywhere; }
-#details h2 { margin: 0 0 10px; font-size: 16px; }
-#details p { color: var(--vscode-descriptionForeground); }
-#details button { display: block; margin: 7px 0; max-width: 100%; }
-.edge-evidence { border-top: 1px solid var(--vscode-panel-border); padding-top: 11px; margin-top: 13px; }
-.edge-evidence p { margin: 5px 0; }
-.map-node { cursor: pointer; }
-.map-node rect { fill: var(--vscode-editorWidget-background); stroke: var(--vscode-panel-border); stroke-width: 2; }
-.map-node.domain rect { fill: var(--vscode-button-background); stroke: var(--vscode-button-background); }
-.map-node.route rect { stroke: var(--vscode-charts-blue, var(--vscode-panel-border)); }
-.map-node.task rect { stroke: var(--vscode-charts-orange, var(--vscode-panel-border)); }
-.map-node.selected rect { stroke: var(--vscode-focusBorder); stroke-width: 3; }
-.map-node.dim { opacity: .28; }
-.map-node.outside { opacity: .65; }
+:root {
+  --archi-font: var(--vscode-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif);
+  --archi-border: var(--vscode-panel-border, rgba(128, 128, 128, 0.2));
+  --archi-bg: var(--vscode-editor-background, #1e1e1e);
+  --archi-card-bg: var(--vscode-editorWidget-background, #252526);
+  --archi-hover-bg: var(--vscode-list-hoverBackground, rgba(255, 255, 255, 0.08));
+  --archi-accent: var(--vscode-charts-blue, #3794ff);
+  --archi-green: var(--vscode-charts-green, #388a34);
+  --archi-orange: var(--vscode-charts-orange, #d18616);
+  --archi-red: var(--vscode-charts-red, #e51400);
+  --archi-purple: var(--vscode-charts-purple, #b180d7);
+}
+
+body {
+  margin: 0;
+  color: var(--vscode-foreground);
+  background: var(--archi-bg);
+  font: var(--vscode-font-size, 13px) var(--archi-font);
+  line-height: 1.4;
+  overflow: hidden;
+}
+
+/* Header & Meta */
+header {
+  padding: 12px 20px;
+  background: var(--vscode-sideBar-background, var(--archi-bg));
+  border-bottom: 1px solid var(--archi-border);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.header-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+h1 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+header p {
+  margin: 0;
+  color: var(--vscode-descriptionForeground);
+  font-size: 12px;
+}
+#coverage {
+  font-size: 12px;
+  color: var(--vscode-descriptionForeground);
+  font-feature-settings: "tnum";
+}
+
+/* Toolbar & Command Strip */
+.toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 20px;
+  background: var(--vscode-editorGroupHeader-tabsBackground, var(--archi-bg));
+  border-bottom: 1px solid var(--archi-border);
+}
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.toolbar-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--archi-border);
+  margin: 0 4px;
+}
+
+#breadcrumbs {
+  color: var(--vscode-descriptionForeground);
+  font-size: 12px;
+  margin-right: 6px;
+}
+#budget-warning {
+  margin: 0;
+  padding: 6px 20px;
+  font-size: 12px;
+  background: rgba(255, 165, 0, 0.1);
+  color: var(--vscode-editorWarning-foreground);
+  border-bottom: 1px solid var(--archi-border);
+}
+
+/* Form Controls & Action Buttons */
+input, select, button {
+  color: var(--vscode-input-foreground);
+  background: var(--vscode-input-background);
+  border: 1px solid var(--vscode-input-border, var(--archi-border));
+  border-radius: 4px;
+  padding: 4px 8px;
+  font: inherit;
+  font-size: 12px;
+  transition: all 0.15s ease-in-out;
+}
+input:focus, select:focus, button:focus-visible {
+  outline: 1px solid var(--vscode-focusBorder);
+  outline-offset: 1px;
+  border-color: var(--vscode-focusBorder);
+}
+input[type=search] {
+  min-width: 160px;
+}
+input[type=range] {
+  width: 80px;
+  padding: 0;
+  vertical-align: middle;
+}
+button {
+  cursor: pointer;
+  color: var(--vscode-button-foreground);
+  background: var(--vscode-button-background);
+  font-weight: 500;
+  border: none;
+}
+button:hover {
+  background: var(--vscode-button-hoverBackground);
+}
+button.secondary {
+  color: var(--vscode-button-secondaryForeground);
+  background: var(--vscode-button-secondaryBackground);
+}
+button.secondary:hover {
+  background: var(--vscode-button-secondaryHoverBackground);
+}
+
+/* Architecture Health Banner */
+#critique-banner {
+  padding: 8px 20px;
+  border-bottom: 1px solid var(--archi-border);
+  background: var(--archi-card-bg);
+  font-size: 12px;
+}
+.critique-score {
+  font-weight: 600;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.critique-score.good { color: var(--archi-green); }
+.critique-score.warning { color: var(--archi-orange); }
+.critique-score.danger { color: var(--archi-red); }
+.critique-item {
+  margin: 3px 0;
+  padding: 4px 8px;
+  border-radius: 3px;
+  line-height: 1.35;
+}
+.critique-item.security {
+  background: rgba(229, 20, 0, 0.12);
+  border-left: 3px solid var(--archi-red);
+}
+.critique-item.weakness {
+  background: rgba(209, 134, 22, 0.12);
+  border-left: 3px solid var(--archi-orange);
+}
+.critique-item.strength {
+  background: rgba(56, 138, 52, 0.12);
+  border-left: 3px solid var(--archi-green);
+}
+
+/* Main Layout */
+main {
+  display: grid;
+  grid-template-columns: minmax(300px, 1fr) 300px;
+  height: calc(100vh - 125px);
+}
+#canvas {
+  overflow: auto;
+  background: radial-gradient(circle, var(--archi-border) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-color: var(--archi-bg);
+  position: relative;
+}
+#canvas svg {
+  display: block;
+}
+
+/* Inspector / Details Sidebar */
+#details {
+  padding: 16px;
+  border-left: 1px solid var(--archi-border);
+  background: var(--vscode-sideBar-background, var(--archi-card-bg));
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+}
+#details h2 {
+  margin: 0 0 6px;
+  font-size: 15px;
+  font-weight: 600;
+}
+#details h3 {
+  margin: 14px 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--vscode-descriptionForeground);
+}
+#details p {
+  margin: 4px 0 8px;
+  color: var(--vscode-descriptionForeground);
+  font-size: 12px;
+}
+#details button {
+  display: block;
+  width: 100%;
+  margin: 6px 0;
+  text-align: center;
+}
+.edge-evidence {
+  border-top: 1px solid var(--archi-border);
+  padding-top: 10px;
+  margin-top: 12px;
+}
+.edge-evidence p { margin: 4px 0; }
+
+/* SVG Canvas Nodes */
+.map-node {
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+.map-node:hover rect {
+  filter: brightness(1.08);
+}
+.map-node rect {
+  fill: var(--archi-card-bg);
+  stroke: var(--archi-border);
+  stroke-width: 1.5;
+  rx: 8px;
+}
+.map-node.service rect {
+  stroke-left: 4px solid var(--archi-accent);
+}
+.map-node.database rect {
+  stroke: var(--archi-green);
+}
+.map-node.cache rect {
+  stroke: var(--archi-orange);
+}
+.map-node.broker rect {
+  stroke: var(--archi-purple);
+}
+.map-node.domain rect {
+  fill: var(--vscode-button-background);
+  stroke: var(--vscode-button-background);
+}
+.map-node.route rect {
+  stroke: var(--archi-accent);
+}
+.map-node.task rect {
+  stroke: var(--archi-orange);
+}
+.map-node.selected rect {
+  stroke: var(--vscode-focusBorder);
+  stroke-width: 2.5;
+}
+.map-node.dim { opacity: 0.25; }
+.map-node.outside { opacity: 0.6; }
 .map-node.pinned rect { stroke-dasharray: 4 3; }
-.node-title { fill: var(--vscode-editorWidget-foreground); font-size: 16px; font-weight: 700; }
-.domain .node-title, .domain .node-subtitle { fill: var(--vscode-button-foreground); }
-.node-subtitle { fill: var(--vscode-descriptionForeground); font-size: 12px; }
-.link { fill: none; stroke: var(--vscode-descriptionForeground); stroke-width: 2; opacity: .6; }
-.link.http { stroke: var(--vscode-charts-blue, var(--vscode-descriptionForeground)); }
-.link.database, .link.database_host { stroke: var(--vscode-charts-green, var(--vscode-descriptionForeground)); }
-.link.redis { stroke: var(--vscode-charts-orange, var(--vscode-descriptionForeground)); }
-.link.selected { stroke-width: 4; opacity: 1; }
-.link-hit { fill: none; stroke: transparent; stroke-width: 16; cursor: pointer; }
-#diagnostics { margin: 0; padding: 8px 20px 8px 38px; color: var(--vscode-editorWarning-foreground); border-bottom: 1px solid var(--vscode-panel-border); }
-@media (max-width: 750px) { main { grid-template-columns: 1fr; } #details { border-left: 0; border-top: 1px solid var(--vscode-panel-border); max-height: none; } }
+
+.node-title {
+  fill: var(--vscode-editorWidget-foreground, var(--vscode-foreground));
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--archi-font);
+}
+.domain .node-title, .domain .node-subtitle {
+  fill: var(--vscode-button-foreground);
+}
+.node-subtitle {
+  fill: var(--vscode-descriptionForeground);
+  font-size: 11px;
+  font-family: var(--archi-font);
+}
+
+/* SVG Canvas Links */
+.link {
+  fill: none;
+  stroke: var(--vscode-descriptionForeground);
+  stroke-width: 1.6;
+  opacity: 0.6;
+}
+.link.http, .link.calls { stroke: var(--archi-accent); }
+.link.database, .link.database_host, .link.writes, .link.reads { stroke: var(--archi-green); }
+.link.redis, .link.cache { stroke: var(--archi-orange); }
+.link.broker, .link.publishes, .link.consumes { stroke: var(--archi-purple); }
+.link.selected {
+  stroke-width: 3.5;
+  opacity: 1;
+}
+.link-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 14;
+  cursor: pointer;
+}
+
+#diagnostics {
+  margin: 0;
+  padding: 6px 20px 6px 36px;
+  font-size: 12px;
+  color: var(--vscode-editorWarning-foreground);
+  background: rgba(255, 165, 0, 0.08);
+  border-bottom: 1px solid var(--archi-border);
+}
+
+@media (max-width: 800px) {
+  main { grid-template-columns: 1fr; }
+  #details { border-left: 0; border-top: 1px solid var(--archi-border); }
+}
